@@ -1,7 +1,7 @@
 const { createServer } = require('node:http');
 
 const hostname = '127.0.0.1';
-const port = 3000;
+const port = 3001;
 
 // Fake in-memory "database" of orders — just an array for now.
 // (This gets replaced by fs on Day 4, and by Postgres in Stage 3)
@@ -29,7 +29,15 @@ const server = createServer((req, res) => {
     return;
   }
 
-  // Route 3: POST /api/orders -> add a new order (body handling comes Day 3)
+  // Route 3: GET /api/orders/1 -> return first order
+  if (method === 'GET' && url === "/api/orders/1") {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(orders[0]));
+    return;
+  }
+
+  // Route 4: POST /api/orders -> add a new order (body handling comes Day 3)
   if (method === 'POST' && url === '/api/orders') {
     const newOrder = { id: orders.length + 1, item: 'New Item (placeholder)' };
     orders.push(newOrder);

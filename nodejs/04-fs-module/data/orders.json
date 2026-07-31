@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "item": "testing"
+  },
+  {
+    "id": 2,
+    "item": "Zinger Burger"
+  },
+  {
+    "id": 3,
+    "item": "This is how file system work in nodejs"
+  }
+]
