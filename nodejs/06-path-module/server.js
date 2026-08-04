@@ -110,6 +110,7 @@ const server = createServer(async (req, res) => {
         ...parsed,
         sizeBytes: stats.size,
         lastModified: stats.mtime,
+        directoryName: path.dirname(fullPath),
       });
     } catch (err) {
       await sendJSON(res, 404, { error: 'File not found' });
