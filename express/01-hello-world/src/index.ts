@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app: Express = express();
-const port = 3000;
+const port = 3001;
 
 // ---------- STATIC FILES ----------
 // Serves everything inside the "public" folder automatically.
