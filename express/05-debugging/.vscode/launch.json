@@ -1,0 +1,7 @@
+{
+  "type": "node",
+  "request": "launch",
+  "name": "Launch Express app",
+  "program": "src/server.ts",
+  "env": { "DEBUG": "express:*,router,router:*" }
+}
