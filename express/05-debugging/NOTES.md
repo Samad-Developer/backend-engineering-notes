@@ -165,4 +165,4 @@ logs, then remove it. Code never needs to be touched.
 | `debug` in own code | Routine, ongoing visibility without cluttering the codebase permanently |
 | Node inspector (`--inspect` + breakpoints) | A genuinely confusing bug — pause and inspect real live values |
 | Express internal `DEBUG=express:*` | Rarely — only when routing itself seems broken |
-| `.vscode/launch.json` | Convenience once the above two are used regularly |a
+| `.vscode/launch.json` | Convenience once the above two are used regularly |
