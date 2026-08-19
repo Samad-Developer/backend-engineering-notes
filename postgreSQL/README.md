@@ -2,8 +2,6 @@
 
 Part of my backend learning journey — **Phase 1, Module 4: PostgreSQL + Raw SQL (no ORM)**.
 
-Revised after cross-checking against established SQL/PostgreSQL curricula (roadmap.sh, postgresqltutorial.com, GeeksforGeeks, DataCamp) to catch gaps missed in v1. Changes from v1 are marked **[NEW]**.
-
 ## How I Learn Each Module
 
 1. Concept explained in plain, simple words — before any code
