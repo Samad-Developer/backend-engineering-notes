@@ -1,4 +1,4 @@
-# 05 — CRUD: Create, Read, Update, Delete, Upsert (Module 4)
+# 05 — CRUD: Create, Read, Update, Delete, Upsert
 **Project:** BookEasy — PostgreSQL + raw SQL (Phase 1, Module 4 of backend roadmap)
 **Approach:** Staged — one operation at a time, practiced on real BookEasy tables (`users`, `venues`, `bookings`)
 
