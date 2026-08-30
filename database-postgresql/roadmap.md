@@ -1,135 +1,873 @@
-# Database Learning Roadmap (PostgreSQL + Raw SQL) — v2
+# Database + PostgreSQL Roadmap
 
-Part of my backend learning journey — **Phase 1, Module 4: PostgreSQL + Raw SQL (no ORM)**.
+## Full-Stack Developer → Software Engineer
 
-## How I Learn Each Module
+**Legend**
 
-1. Concept explained in plain, simple words — before any code
-2. Where the underlying need/problem actually comes from
-3. What goes wrong in practice if it isn't used
-4. Real, working code I can run and verify myself, with diagrams/tables where useful — not walls of text
-
-## Stack
-
-- TypeScript throughout (ESM, `"type": "module"`, `verbatimModuleSyntax`)
-- Node running `.ts` files directly in dev, `tsc` for type-checking only
-- PostgreSQL + `pg` driver (raw SQL, no ORM in this phase)
-- Project: **BookEasy** — a booking app, raw SQL, JWT auth from scratch
+* ✅ Completed
+* 🔴 Must Learn
+* 🟡 Learn Later / During Projects
+* 🔵 Phase 2 — Advanced PostgreSQL / Engineering
 
 ---
 
-## Stage A — Foundations (Mental Model, Minimal Code)
+# Stage 1 — Relational Database Foundations
 
-### Module 1 — Core Concepts (No Code)
-- Tables, rows, columns, schema
-- Primary keys
-- **Foreign keys** — how one table points to another
-- **All relationship shapes**: one-to-one, one-to-many (= many-to-one, same relationship viewed from either side), many-to-many (via join table) **[NEW: one-to-one and many-to-one explicitly called out]**
-- **Types of keys** — primary, foreign, candidate, unique, composite, natural, surrogate **[NEW: full key vocabulary, not just primary/foreign]**
+## Module 1 — Core Database Concepts
 
-### Module 2 — Install, Connect, and the Two Ways to Talk to Postgres
-- Getting Postgres installed and running
-- `psql` (CLI) vs `pg` driver (from Express code) — both just clients on port 5432
-- Env-based config, no passwords in code
+### Database Mental Model
 
-### Module 2.5 — Normalization **[NEW MODULE]**
-- What "redundant/duplicated data" actually costs you (update anomalies — change one thing, forget to change its copy elsewhere)
-- 1NF, 2NF, 3NF explained practically, not academically — what each one actually fixes
-- When to deliberately break normalization (denormalize) for performance — and why that's a Phase 2/3 decision, not a beginner one
-- This sits right after Module 2 because it explains *why* we split into tables at all, before we design our first one in Module 3
+* ✅ Tables
+* ✅ Rows
+* ✅ Columns
+* ✅ Schema
+* 🔴 Entity
+* 🔴 Attribute
+* 🔴 Relationship
+* 🔴 Cardinality
+* 🔴 Referential integrity
 
----
+### Keys
 
-## Stage B — Speaking SQL Against One Table
+* ✅ Primary key
+* ✅ Foreign key
+* ✅ Candidate key
+* ✅ Unique key
+* ✅ Composite key
+* ✅ Natural key
+* ✅ Surrogate key
 
-### Module 3 — Designing a Table (DDL) + Postgres Data Types
-- `CREATE TABLE`
-- Types: `SERIAL`/`IDENTITY`, `TEXT`, `INTEGER`, `BOOLEAN`, `TIMESTAMPTZ`, `UUID`, `JSONB`
-- Constraints at creation: `NOT NULL`, `PRIMARY KEY`, `DEFAULT`
-- **Deliverable:** design BookEasy's `users` table
+### Relationships
 
-### Module 4 — CRUD on a Single Table
-- `INSERT`, `SELECT`, `UPDATE`, `DELETE`
-- Parameterized queries (`$1, $2`) — SQL injection is the "what breaks" here
-- **[NEW]** `UPSERT` (`INSERT ... ON CONFLICT`) — insert-or-update in one atomic statement, a real Postgres feature you'll actually use
-
-### Module 5 — Querying: Filtering, Sorting, Limiting
-- `WHERE` operators: `=`, `<`, `IN`, `LIKE`, `IS NULL`
-- `ORDER BY`
-- `LIMIT` / `OFFSET` — how backend pagination actually works
+* ✅ One-to-one
+* ✅ One-to-many
+* ✅ Many-to-one
+* 🔴 Many-to-many
+* 🔴 Join table / junction table
 
 ---
 
-## Stage C — Relationships (The Heart of Relational Databases)
+# Stage 2 — Database Design
 
-### Module 6 — Foreign Keys and JOINs
-- Splitting data across tables and linking them (the practical, coded version of Module 1's theory)
-- `INNER JOIN`, `LEFT JOIN`, and **[NEW]** a short mention of `RIGHT JOIN` / `FULL OUTER JOIN` / self-join / cross-join — so I recognize them even if I don't use them daily
-- Modeling one-to-many, one-to-one, and many-to-many (join table) in real SQL
+## Module 2 — Normalization & Denormalization
 
-### Module 7 — Aggregation and Grouping
-- `COUNT`, `SUM`, `AVG`
-- `GROUP BY`, `HAVING`
-- "Bookings per venue" without looping in Node
+### Normalization
 
-### Module 7.5 — Subqueries and CTEs **[NEW MODULE]**
-- A query nested inside another query — where it's actually needed (e.g. "users who have never booked anything")
-- Common Table Expressions (`WITH ... AS`) — same idea, written readably instead of nested and tangled
-- Why this matters for BookEasy: multi-step logic (like checking availability) is often cleaner as a CTE than as application code doing multiple round trips
+* ✅ Why duplicated data is dangerous
+* ✅ Update anomalies
+* ✅ Insert anomalies
+* ✅ Delete anomalies
+* ✅ 1NF
+* ✅ 2NF
+* ✅ 3NF
+* 🔴 Functional dependency — basic understanding
+* 🔴 Choosing an appropriate normalized structure
 
----
+### Denormalization
 
-## Stage D — Correctness and Safety (Junior → Solid)
-
-### Module 8 — Data Integrity Deep-Dive
-- `UNIQUE`, `CHECK` constraints
-- Foreign-key actions: `ON DELETE CASCADE` / `RESTRICT`
-- Composite keys in practice (the join table's real primary key)
-
-### Module 9 — Transactions
-- `BEGIN` / `COMMIT` / `ROLLBACK`, atomicity
-- **Highlight:** solving the double-booking race condition — the core correctness problem for a booking app
-
-### Module 10 — Indexes and Performance
-- What an index is, why lookups are slow without one
-- Reading `EXPLAIN` output
-- When to add one, and the cost of over-indexing
+* ✅ Basic denormalization concept
+* 🔴 When denormalization is useful
+* 🔴 Performance trade-offs
+* 🔴 Data consistency problems caused by denormalization
 
 ---
 
-## Stage E — Real Application Structure
+# Stage 3 — PostgreSQL Environment
 
-### Module 11 — Views **[NEW MODULE]**
-- A saved, reusable query that behaves like a virtual table
-- Where it earns its keep: hiding a complex JOIN behind a simple name, or restricting which columns a part of the app can see
-- Kept intentionally light — full materialized views and refresh strategies are a Phase 2/3 performance topic
+## Module 3 — PostgreSQL Setup & Connection
 
-### Module 12 — Schema Evolution (Hand-Written Migrations)
-- Changing a live schema safely with ordered SQL migration files
-- Doing it by hand *before* Prisma, so its migrations aren't a black box later
-
-### Module 13 — Structuring DB Code in a TypeScript/Express App
-- Repository / data-access layer
-- Managing the connection pool correctly
-- Typing query results, centralizing DB error handling
-
-### Module 14 — Capstone: BookEasy Data Layer, End to End
-- Wire Modules 3–13 into one coherent backend: users, venues, bookings
-- Real relationships, transactions on booking creation, proper structure
-- The portfolio proof piece
+* ✅ Install PostgreSQL
+* ✅ PostgreSQL server
+* ✅ `psql`
+* ✅ `pg` driver
+* ✅ Port `5432`
+* ✅ Connection configuration
+* ✅ Environment variables
+* 🔴 PostgreSQL databases
+* 🔴 PostgreSQL schemas
+* 🔴 PostgreSQL roles/users
+* 🔴 Basic database permissions
+* 🔴 `GRANT`
+* 🔴 `REVOKE`
+* 🔴 Least-privilege concept
 
 ---
 
-## Deliberately Deferred to Phase 2 / 3
+# Stage 4 — Tables & Data Types
 
-Each builds on this raw-SQL foundation — which is why raw SQL comes first.
+## Module 4 — DDL & PostgreSQL Data Types
 
-- Prisma ORM
-- Redis caching
-- Connection pooling at scale (PgBouncer)
-- Replication / backups
-- Stored procedures, triggers, PL/pgSQL **[NEW: explicitly named as deferred, not silently dropped]**
-- Window functions **[NEW: explicitly named as deferred]**
-- `pgvector` / embeddings (AI phase)
+### Table Creation
+
+* ✅ `CREATE TABLE`
+* ✅ `NOT NULL`
+* ✅ `PRIMARY KEY`
+* ✅ `DEFAULT`
+
+### Data Types
+
+* ✅ `UUID`
+* ✅ `JSONB`
+* ✅ `IDENTITY`
+* 🔴 `TEXT`
+* 🔴 `INTEGER`
+* 🔴 `BIGINT`
+* 🔴 `BOOLEAN`
+* 🔴 `NUMERIC` / `DECIMAL`
+* 🔴 `DATE`
+* 🔴 `TIMESTAMP`
+* 🔴 `TIMESTAMPTZ`
+* 🔴 `TIME`
+* 🔴 `INTERVAL`
+* 🟡 Arrays
+* 🟡 PostgreSQL `ENUM`
+
+### Type Selection
+
+* 🔴 Choosing the correct data type
+* 🔴 `TIMESTAMP` vs `TIMESTAMPTZ`
+* 🔴 `INTEGER` vs `BIGINT`
+* 🔴 `NUMERIC` vs floating-point types
 
 ---
+
+# Stage 5 — SQL CRUD
+
+## Module 5 — INSERT, SELECT, UPDATE, DELETE
+
+* 🔴 `INSERT`
+* 🔴 `SELECT`
+* 🔴 `UPDATE`
+* 🔴 `DELETE`
+* ✅ Parameterized queries
+* ✅ `$1`, `$2`
+* ✅ SQL injection prevention
+* ✅ UPSERT
+* 🔴 `RETURNING`
+
+### PostgreSQL Returning Data
+
+* 🔴 `INSERT ... RETURNING`
+* 🔴 `UPDATE ... RETURNING`
+* 🔴 `DELETE ... RETURNING`
+
+---
+
+# Stage 6 — Querying Data
+
+## Module 6 — Filtering, Sorting & Pagination
+
+### Filtering
+
+* 🔴 `WHERE`
+* 🔴 `=`
+* 🔴 `>`
+* 🔴 `<`
+* 🔴 `>=`
+* 🔴 `<=`
+* 🔴 `!=`
+* 🔴 `IN`
+* 🔴 `NOT IN`
+* 🔴 `BETWEEN`
+* 🔴 `LIKE`
+* 🔴 `ILIKE`
+* 🔴 `IS NULL`
+* 🔴 `IS NOT NULL`
+* 🔴 `AND`
+* 🔴 `OR`
+* 🔴 `NOT`
+* 🔴 `NULL` behavior
+
+### Sorting
+
+* 🔴 `ORDER BY`
+* 🔴 `ASC`
+* 🔴 `DESC`
+
+### Pagination
+
+* 🔴 `LIMIT`
+* 🔴 `OFFSET`
+* 🔴 Offset pagination
+* 🔴 Cursor/keyset pagination
+* 🔴 Stable pagination ordering
+
+### Useful SQL Expressions
+
+* 🔴 `CASE`
+* 🔴 `COALESCE`
+* 🔴 Basic string functions
+* 🔴 Basic date/time functions
+
+---
+
+# Stage 7 — Relationships & JOINs
+
+## Module 7 — Foreign Keys & JOINs
+
+### Relationships
+
+* 🔴 One-to-one implementation
+* 🔴 One-to-many implementation
+* 🔴 Many-to-one implementation
+* 🔴 Many-to-many implementation
+* 🔴 Junction/join tables
+* 🔴 Composite keys in join tables
+
+### JOINs
+
+* 🔴 `INNER JOIN`
+* 🔴 `LEFT JOIN`
+* 🟡 `RIGHT JOIN`
+* 🟡 `FULL OUTER JOIN`
+* 🟡 Self JOIN
+* 🟡 `CROSS JOIN`
+
+### JOIN Concepts
+
+* 🔴 Joining multiple tables
+* 🔴 Joining through foreign keys
+* 🔴 JOIN + filtering
+* 🔴 JOIN + aggregation
+* 🔴 Understanding duplicate rows caused by JOINs
+* 🔴 Basic JOIN performance considerations
+
+---
+
+# Stage 8 — Aggregation & Grouping
+
+## Module 8 — Aggregate Queries
+
+### Aggregate Functions
+
+* 🔴 `COUNT`
+* 🔴 `SUM`
+* 🔴 `AVG`
+* 🔴 `MIN`
+* 🔴 `MAX`
+
+### Grouping
+
+* 🔴 `GROUP BY`
+* 🔴 `HAVING`
+
+### Important Patterns
+
+* 🔴 `COUNT(*)`
+* 🔴 `COUNT(column)`
+* 🔴 `COUNT(DISTINCT column)`
+* 🔴 Aggregation with JOINs
+* 🔴 Conditional aggregation
+* 🔴 `CASE` + aggregation
+
+---
+
+# Stage 9 — Advanced SQL Querying
+
+## Module 9 — Subqueries & CTEs
+
+### Subqueries
+
+* 🔴 What subqueries solve
+* 🔴 Scalar subqueries
+* 🔴 Subqueries with `IN`
+* 🔴 Subqueries with `EXISTS`
+* 🔴 Correlated subqueries
+* 🔴 `NOT EXISTS`
+* 🔴 `IN` vs `EXISTS`
+
+### CTEs
+
+* 🔴 `WITH`
+* 🔴 Multiple CTEs
+* 🔴 CTE + JOIN
+* 🔴 CTE + aggregation
+* 🔴 CTE + `INSERT`
+* 🔴 CTE + `UPDATE`
+* 🔴 CTE + `DELETE`
+* 🟡 Recursive CTEs — awareness
+
+---
+
+# Stage 10 — Data Integrity
+
+## Module 10 — Constraints & Referential Integrity
+
+### Constraints
+
+* 🔴 `PRIMARY KEY`
+* 🔴 `FOREIGN KEY`
+* 🔴 `NOT NULL`
+* 🔴 `UNIQUE`
+* 🔴 `CHECK`
+* 🔴 `DEFAULT`
+
+### Foreign-Key Actions
+
+* 🔴 `ON DELETE CASCADE`
+* 🔴 `ON DELETE RESTRICT`
+* 🔴 `ON DELETE SET NULL`
+* 🔴 `ON UPDATE`
+
+### Advanced Constraints
+
+* 🔴 Composite primary keys
+* 🔴 Composite unique constraints
+* 🔴 Multi-column constraints
+* 🔴 Database-level business rules
+* 🔴 Understanding when validation belongs in application code vs database constraints
+
+---
+
+# Stage 11 — Transactions & Concurrency
+
+## Module 11 — Transactions
+
+### Transactions
+
+* 🔴 `BEGIN`
+* 🔴 `COMMIT`
+* 🔴 `ROLLBACK`
+* 🔴 Atomicity
+* 🔴 Transaction boundaries
+* 🔴 Partial failure
+* 🔴 Transaction error handling
+
+### Concurrency
+
+* 🔴 Concurrent requests
+* 🔴 Race conditions
+* 🔴 Lost updates
+* 🔴 Double-booking problem
+* 🔴 Inventory race conditions
+* 🔴 Isolation levels — practical understanding
+
+### Locking
+
+* 🔴 Row-level locks
+* 🔴 `SELECT ... FOR UPDATE`
+* 🔴 Lock duration
+* 🔴 Lock contention
+* 🔴 Deadlocks
+* 🔴 Deadlock prevention basics
+
+---
+
+# Stage 12 — Database Performance
+
+## Module 12 — Indexes & Query Optimization
+
+### Index Fundamentals
+
+* 🔴 What an index is
+* 🔴 Why indexes improve reads
+* 🔴 Index storage cost
+* 🔴 Index write cost
+* 🔴 When to create indexes
+* 🔴 When NOT to create indexes
+* 🔴 Over-indexing
+
+### Index Types
+
+* 🔴 B-tree
+* 🟡 Hash
+* 🟡 GIN
+* 🟡 GiST
+* 🟡 BRIN
+
+### Practical Indexing
+
+* 🔴 Single-column indexes
+* 🔴 Composite indexes
+* 🔴 Composite index column order
+* 🔴 Indexes for `WHERE`
+* 🔴 Indexes for `JOIN`
+* 🔴 Indexes for `ORDER BY`
+* 🔴 Foreign-key indexes
+* 🔴 Unique indexes
+* 🔴 Partial indexes
+* 🔴 Expression indexes
+* 🟡 Covering indexes / `INCLUDE`
+* 🟡 Index-only scans
+
+### Query Plans
+
+* 🔴 `EXPLAIN`
+* 🔴 `EXPLAIN ANALYZE`
+* 🔴 `EXPLAIN (ANALYZE, BUFFERS)`
+* 🔴 Sequential scan
+* 🔴 Index scan
+* 🔴 Bitmap index scan
+* 🔴 Bitmap heap scan
+* 🔴 Estimated rows vs actual rows
+* 🔴 Planning time
+* 🔴 Execution time
+* 🔴 Basic query-plan interpretation
+
+### Query Optimization
+
+* 🔴 Avoid unnecessary queries
+* 🔴 Avoid unnecessary `SELECT *`
+* 🔴 Avoid unnecessary JOINs
+* 🔴 Avoid unnecessary `DISTINCT`
+* 🔴 Avoid unnecessary sorting
+* 🔴 Reduce database round trips
+* 🔴 N+1 query problem
+* 🔴 Batch operations
+* 🔴 Measure before/after optimization
+
+---
+
+# Stage 13 — PostgreSQL + Node.js
+
+## Module 13 — `pg` Driver & Database Integration
+
+### PostgreSQL Connection
+
+* 🔴 Installing/configuring `pg`
+* 🔴 Creating a connection
+* 🔴 Connection pool
+* 🔴 `Pool`
+* 🔴 Connection reuse
+* 🔴 Pool sizing
+* 🔴 Connection limits
+* 🔴 Connection exhaustion
+* 🔴 Connection timeout
+* 🔴 Query timeout
+
+### Queries from Node.js
+
+* 🔴 Executing queries
+* 🔴 Parameterized queries
+* 🔴 Query results
+* 🔴 TypeScript typing
+* 🔴 PostgreSQL errors
+* 🔴 Error handling
+* 🔴 Transaction handling from Node.js
+
+### Architecture
+
+* 🔴 HTTP request → controller → service → repository → PostgreSQL
+* 🔴 Database connection lifecycle
+* 🔴 Centralized database configuration
+
+---
+
+# Stage 14 — Database Application Architecture
+
+## Module 14 — Data Access Layer
+
+### Structure
+
+* 🔴 Repository pattern
+* 🔴 Data-access layer
+* 🔴 Service layer
+* 🔴 Controller responsibilities
+* 🔴 Separating SQL from controllers
+* 🔴 Reusable database functions
+
+### Error Handling
+
+* 🔴 PostgreSQL error codes
+* 🔴 Constraint violation handling
+* 🔴 Unique constraint errors
+* 🔴 Foreign-key errors
+* 🔴 Transaction errors
+* 🔴 Mapping DB errors to API errors
+
+### Transactions
+
+* 🔴 Service-level transaction boundaries
+* 🔴 Passing a transaction/client through repositories
+* 🔴 Rollback on failure
+
+---
+
+# Stage 15 — Database Migrations
+
+## Module 15 — Schema Evolution
+
+### Migration Fundamentals
+
+* 🔴 Why migrations exist
+* 🔴 Migration files
+* 🔴 Ordered migrations
+* 🔴 Running migrations
+* 🔴 Tracking migration state
+
+### Schema Changes
+
+* 🔴 Add table
+* 🔴 Add column
+* 🔴 Remove column
+* 🔴 Rename column
+* 🔴 Modify column
+* 🔴 Add constraint
+* 🔴 Remove constraint
+* 🔴 Add index
+* 🔴 Remove index
+
+### Production Safety
+
+* 🔴 Safe schema changes
+* 🔴 Migration ordering
+* 🔴 Migration conflicts
+* 🔴 Rollback strategies
+* 🔴 Backward-compatible migrations
+* 🔴 Zero/minimal-downtime migration concepts
+
+---
+
+# Stage 16 — Database Security
+
+## Module 16 — PostgreSQL Security
+
+### Application Security
+
+* 🔴 SQL injection
+* 🔴 Parameterized queries
+* 🔴 Secrets/environment variables
+* 🔴 Secure database credentials
+* 🔴 SSL/TLS connection concept
+
+### PostgreSQL Security
+
+* 🔴 Users/roles
+* 🔴 `GRANT`
+* 🔴 `REVOKE`
+* 🔴 Least privilege
+* 🔴 Database/schema/table permissions
+
+### Data Protection
+
+* 🔴 Password hashing
+* 🔴 Sensitive data handling
+* 🔴 Don't store unnecessary sensitive data
+* 🔴 Access control
+
+### Row-Level Security
+
+* 🟡 RLS concept
+* 🟡 Policies
+* 🟡 `USING`
+* 🟡 `WITH CHECK`
+* 🟡 Multi-tenant data isolation
+
+---
+
+# Stage 17 — Database Views
+
+## Module 17 — Views
+
+* 🔴 What a view is
+* 🔴 `CREATE VIEW`
+* 🔴 Querying views
+* 🔴 Updating/views limitations — basic
+* 🔴 When views are useful
+* 🟡 Materialized views — awareness
+* 🟡 Refreshing materialized views
+
+---
+
+# Stage 18 — Database Testing
+
+## Module 18 — Testing PostgreSQL Applications
+
+### Testing
+
+* 🔴 Test database
+* 🔴 Integration testing
+* 🔴 Repository testing
+* 🔴 Query testing
+* 🔴 Transaction testing
+* 🔴 Constraint testing
+* 🔴 Migration testing
+
+### Test Data
+
+* 🔴 Seed data
+* 🔴 Test fixtures
+* 🔴 Database cleanup
+* 🔴 Test isolation
+
+---
+
+# Stage 19 — Production PostgreSQL
+
+## Module 19 — Operating a Real Database
+
+### Production Basics
+
+* 🔴 Development vs production database
+* 🔴 Production connection configuration
+* 🔴 Connection limits
+* 🔴 Connection pooling
+* 🔴 Database logs
+* 🔴 Error monitoring
+* 🔴 Slow-query monitoring
+* 🔴 Database health checks
+
+### Backup & Recovery
+
+* 🔴 Database backups
+* 🔴 Restore concept
+* 🔴 Backup verification
+* 🔴 Disaster recovery basics
+* 🟡 Point-in-time recovery — awareness
+
+### Monitoring
+
+* 🔴 `pg_stat_activity`
+* 🟡 `pg_stat_statements`
+* 🟡 Table/index size monitoring
+* 🟡 Lock monitoring
+* 🟡 Database resource monitoring
+
+---
+
+# Stage 20 — Full Database Capstone
+
+## BookEasy — Production-Style Database
+
+### Database Design
+
+* 🔴 Users
+* 🔴 Venues
+* 🔴 Venue slots
+* 🔴 Bookings
+* 🔴 Relationships
+* 🔴 Constraints
+* 🔴 Indexes
+
+### Application Features
+
+* 🔴 Authentication data
+* 🔴 Authorization
+* 🔴 CRUD
+* 🔴 Search
+* 🔴 Filtering
+* 🔴 Pagination
+* 🔴 Aggregation
+* 🔴 Transactions
+* 🔴 Concurrent booking protection
+* 🔴 Error handling
+* 🔴 Migrations
+* 🔴 Database testing
+* 🔴 Production configuration
+
+### Final Architecture
+
+```text
+Client
+   ↓
+Next.js Frontend
+   ↓
+Express API
+   ↓
+Controller
+   ↓
+Service
+   ↓
+Repository
+   ↓
+pg Pool
+   ↓
+PostgreSQL
+```
+
+---
+
+# Phase 2 — Advanced PostgreSQL & Software Engineering
+
+## Advanced SQL
+
+* 🔵 Window functions
+* 🔵 Advanced `CASE`
+* 🔵 Advanced CTEs
+* 🔵 Recursive CTEs
+* 🔵 Advanced aggregation
+* 🔵 `LATERAL` joins
+* 🔵 Set operations: `UNION`, `INTERSECT`, `EXCEPT`
+
+## Advanced Performance
+
+* 🔵 Advanced query-plan analysis
+* 🔵 Query planner internals
+* 🔵 PostgreSQL statistics
+* 🔵 `ANALYZE`
+* 🔵 Autovacuum
+* 🔵 VACUUM
+* 🔵 Dead tuples
+* 🔵 Table bloat
+* 🔵 Index bloat
+* 🔵 `pg_stat_statements`
+* 🔵 Advanced indexing
+* 🔵 Covering indexes
+* 🔵 Advanced partial/expression indexes
+* 🔵 Partitioning
+* 🔵 Partition pruning
+
+## PostgreSQL Internals
+
+* 🔵 MVCC internals
+* 🔵 Tuple versions
+* 🔵 Transaction IDs
+* 🔵 Visibility
+* 🔵 WAL
+* 🔵 Checkpoints
+* 🔵 Shared buffers
+* 🔵 `work_mem`
+* 🔵 `maintenance_work_mem`
+* 🔵 `effective_cache_size`
+* 🔵 PostgreSQL storage internals
+* 🔵 TOAST
+
+## Advanced Concurrency
+
+* 🔵 Advanced isolation levels
+* 🔵 Serializable transactions
+* 🔵 Advisory locks
+* 🔵 Advanced deadlock analysis
+* 🔵 Lock monitoring
+* 🔵 Concurrency architecture
+
+## Scaling
+
+* 🔵 Read replicas
+* 🔵 Replication
+* 🔵 Replication lag
+* 🔵 Failover
+* 🔵 High availability
+* 🔵 Connection pooling at scale
+* 🔵 PgBouncer
+* 🔵 Horizontal scaling
+* 🔵 Sharding
+* 🔵 Distributed databases
+
+## Reliability
+
+* 🔵 Point-in-time recovery
+* 🔵 Disaster recovery architecture
+* 🔵 Backup strategies
+* 🔵 Failover strategies
+* 🔵 High availability
+* 🔵 Database observability
+
+## Advanced PostgreSQL Features
+
+* 🔵 Stored procedures
+* 🔵 PL/pgSQL
+* 🔵 Advanced triggers
+* 🔵 Functions
+* 🔵 Materialized views
+* 🔵 PostgreSQL extensions
+* 🔵 Full-text search
+* 🔵 `tsvector`
+* 🔵 `tsquery`
+* 🔵 GIN search indexes
+* 🔵 Advanced JSONB
+* 🔵 `pgvector`
+
+---
+
+# Phase 2 — Full-Stack + AI Engineering
+
+## Backend Engineering
+
+* 🔵 Redis
+* 🔵 Caching strategies
+* 🔵 Cache invalidation
+* 🔵 Queues
+* 🔵 BullMQ
+* 🔵 Message brokers
+* 🔵 Background jobs
+* 🔵 WebSockets
+* 🔵 Real-time systems
+* 🔵 Rate limiting
+* 🔵 Distributed locking
+* 🔵 Idempotency
+* 🔵 Event-driven architecture
+
+## Production Engineering
+
+* 🔵 Docker
+* 🔵 Linux
+* 🔵 CI/CD
+* 🔵 Cloud infrastructure
+* 🔵 AWS
+* 🔵 Logging
+* 🔵 Monitoring
+* 🔵 Metrics
+* 🔵 Tracing
+* 🔵 Application observability
+* 🔵 Load balancing
+* 🔵 Horizontal scaling
+
+## System Design
+
+* 🔵 Scalability
+* 🔵 Availability
+* 🔵 Reliability
+* 🔵 CAP theorem
+* 🔵 Consistency models
+* 🔵 Distributed systems
+* 🔵 Database selection
+* 🔵 SQL vs NoSQL
+* 🔵 Caching architecture
+* 🔵 Queue architecture
+* 🔵 Event-driven architecture
+* 🔵 Microservices
+* 🔵 Monolith architecture
+* 🔵 Service boundaries
+
+## AI Engineering
+
+* 🔵 LLM APIs
+* 🔵 Prompt engineering
+* 🔵 Structured outputs
+* 🔵 Function/tool calling
+* 🔵 Streaming AI responses
+* 🔵 Embeddings
+* 🔵 Vector databases
+* 🔵 `pgvector`
+* 🔵 RAG
+* 🔵 Chunking
+* 🔵 Retrieval
+* 🔵 Reranking
+* 🔵 Semantic search
+* 🔵 Hybrid search
+* 🔵 AI agents
+* 🔵 Agent tool use
+* 🔵 AI application architecture
+* 🔵 AI evaluation
+* 🔵 AI observability
+* 🔵 AI security
+* 🔵 Cost/latency optimization
+
+## Final Career Target
+
+```text
+Frontend
+   +
+Backend
+   +
+PostgreSQL
+   +
+APIs
+   +
+Authentication
+   +
+Caching
+   +
+Queues
+   +
+Cloud/DevOps
+   +
+System Design
+   +
+AI Engineering
+   ↓
+Full-Stack AI Engineer
+   ↓
+Software Engineer
+```
